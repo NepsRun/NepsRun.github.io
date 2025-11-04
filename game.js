@@ -1,34 +1,31 @@
-class NeptunCarrotGame {
+class NeptunGame {
     constructor() {
         this.state = {
             resources: {
                 np237: 100,
                 np239: 0,
-                pu238: 0
+                pu238: 0,
+                carrots: 0
+            },
+            farm: {
+                plots: Array(6).fill().map(() => ({
+                    state: 'empty',
+                    progress: 0,
+                    growthTime: 30000
+                }))
             },
             upgrades: {
-                lab: {
-                    basic_research: { level: 0, maxLevel: 10 },
-                    isotope_study: { level: 0, maxLevel: 5 }
-                },
-                neptun: {
-                    water_system: { level: 0, maxLevel: 10 }
-                },
-                titan: {
-                    auto_clicker: { level: 0, maxLevel: 5 }
-                },
-                monkeys: {
-                    lab_monkey: { level: 0, maxLevel: 3 }
-                }
+                basic_research: { level: 0, maxLevel: 10 },
+                isotope_study: { level: 0, maxLevel: 5 },
+                water_system: { level: 0, maxLevel: 10 },
+                auto_clicker: { level: 0, maxLevel: 5 }
             },
             stats: {
                 perClick: 1,
-                autoIncome: 0,
-                totalClicks: 0
+                autoIncome: 0
             }
         };
         
-        this.autoInterval = null;
         this.init();
     }
     
@@ -37,317 +34,264 @@ class NeptunCarrotGame {
         this.loadGame();
         this.updateUI();
         this.startAutoSystems();
+        this.renderFarm();
     }
     
     setupEventListeners() {
         // Клик по морковке
         document.getElementById('main-carrot').addEventListener('click', (e) => {
-            this.handleCarrotClick(e);
+            this.handleClick(e);
         });
         
-        // Переключение систем
-        document.querySelectorAll('.system-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                this.switchSystem(e.currentTarget.dataset.system);
+        // Навигация
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchTab(e.target.dataset.tab);
             });
         });
         
         // Покупка улучшений
         document.querySelectorAll('.buy-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const upgradeItem = e.target.closest('.upgrade-item');
-                this.buyUpgrade(upgradeItem.dataset.upgrade);
+                const upgrade = e.target.closest('.upgrade');
+                this.buyUpgrade(upgrade.dataset.upgrade);
+            });
+        });
+        
+        // Огород
+        document.getElementById('plant-all').addEventListener('click', () => {
+            this.plantAll();
+        });
+        
+        document.getElementById('harvest-all').addEventListener('click', () => {
+            this.harvestAll();
+        });
+        
+        // Магазин
+        document.querySelectorAll('.sell-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const option = e.target.closest('.sell-option');
+                this.sellCarrots(parseInt(option.dataset.amount));
             });
         });
     }
     
-    handleCarrotClick(event) {
-        const carrot = document.getElementById('main-carrot');
-        const clickEffect = document.getElementById('click-effect');
-        
-        // Анимация клика
+    handleClick(e) {
+        const carrot = e.target;
         carrot.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            carrot.style.transform = 'scale(1)';
-        }, 100);
+        setTimeout(() => carrot.style.transform = 'scale(1)', 100);
         
-        // Эффект клика
-        clickEffect.textContent = `+${this.stats.perClick}`;
-        clickEffect.style.animation = 'none';
-        void clickEffect.offsetWidth;
-        clickEffect.style.animation = 'clickPulse 0.6s ease-out';
+        this.addResource('np237', this.state.stats.perClick);
+        this.updateUI();
+    }
+    
+    switchTab(tabName) {
+        // Обновляем кнопки
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         
-        // Начисление нептуния
-        this.addResource('np237', this.stats.perClick);
+        // Показываем контент
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+        document.getElementById(`${tabName}-panel`).classList.add('active');
         
-        // Статистика
-        this.state.stats.totalClicks++;
-        
-        // Случайный бонус (5% шанс)
-        if (Math.random() < 0.05) {
-            this.showBonusEffect();
+        if (tabName === 'farm') {
+            this.renderFarm();
         }
     }
     
-    showBonusEffect() {
-        const messages = [
-            "Отличный клик! Критическое попадание!",
-            "Нептуний-237 пульсирует сильнее!",
-            "Цепная реакция! Бонусный нептуний!"
-        ];
-        const message = messages[Math.floor(Math.random() * messages.length)];
-        this.showProfessorMessage(message, 2000);
-        
-        // Визуальный эффект бонуса
-        const carrot = document.querySelector('.carrot');
-        carrot.style.filter = 'drop-shadow(0 0 30px #ff0000)';
-        setTimeout(() => {
-            carrot.style.filter = 'drop-shadow(0 0 20px var(--carrot-orange))';
-        }, 500);
-    }
-    
     buyUpgrade(upgradeId) {
-        const upgradeConfig = this.getUpgradeConfig(upgradeId);
-        if (!upgradeConfig) return;
-        
-        const upgrade = this.getUpgradeState(upgradeId);
-        const cost = this.calculateUpgradeCost(upgradeId, upgrade.level);
+        const upgrade = this.state.upgrades[upgradeId];
+        const cost = this.getUpgradeCost(upgradeId, upgrade.level);
         
         if (this.state.resources.np237 >= cost && upgrade.level < upgrade.maxLevel) {
-            // Списание ресурсов
             this.state.resources.np237 -= cost;
-            
-            // Улучшение
             upgrade.level++;
             
-            // Применение эффекта
-            this.applyUpgradeEffect(upgradeId);
+            // Применяем эффект
+            switch(upgradeId) {
+                case 'basic_research':
+                    this.state.stats.perClick += 1;
+                    break;
+                case 'isotope_study':
+                    this.state.stats.perClick += 2;
+                    break;
+                case 'water_system':
+                    this.state.stats.autoIncome += 1;
+                    break;
+            }
             
-            // Сообщение профессора
-            this.showProfessorMessage(`Улучшение "${upgradeConfig.name}" достигло уровня ${upgrade.level}!`, 3000);
-            
+            this.startAutoSystems();
             this.updateUI();
             this.saveGame();
         }
     }
     
-    getUpgradeConfig(upgradeId) {
-        const configs = {
-            basic_research: { name: "Базовые исследования", system: "lab" },
-            isotope_study: { name: "Изучение изотопов", system: "lab" },
-            water_system: { name: "Водная система", system: "neptun" },
-            auto_clicker: { name: "Авто-кликер", system: "titan" },
-            lab_monkey: { name: "Обезьяна-лаборант", system: "monkeys" }
-        };
-        return configs[upgradeId];
-    }
-    
-    getUpgradeState(upgradeId) {
-        const config = this.getUpgradeConfig(upgradeId);
-        return this.state.upgrades[config.system][upgradeId];
-    }
-    
-    calculateUpgradeCost(upgradeId, level) {
+    getUpgradeCost(upgradeId, level) {
         const baseCosts = {
             basic_research: 50,
             isotope_study: 200,
             water_system: 100,
-            auto_clicker: 300,
-            lab_monkey: 500
+            auto_clicker: 300
         };
-        
         return Math.floor(baseCosts[upgradeId] * Math.pow(1.5, level));
     }
     
-    applyUpgradeEffect(upgradeId) {
-        switch (upgradeId) {
-            case 'basic_research':
-                this.state.stats.perClick += 1;
-                break;
-            case 'isotope_study':
-                this.state.stats.perClick += 2;
-                break;
-            case 'water_system':
-                this.state.stats.autoIncome += 1;
-                break;
-            case 'lab_monkey':
-                // +5% ко всему доходу за уровень
-                const multiplier = 1 + (0.05 * this.state.upgrades.monkeys.lab_monkey.level);
-                this.state.stats.perClick = Math.floor(this.state.stats.perClick * multiplier);
-                this.state.stats.autoIncome = Math.floor(this.state.stats.autoIncome * multiplier);
-                break;
-        }
+    // Огород
+    renderFarm() {
+        const farmGrid = document.querySelector('.farm-grid');
+        farmGrid.innerHTML = '';
         
-        this.startAutoSystems();
+        this.state.farm.plots.forEach((plot, index) => {
+            const plotElement = document.createElement('div');
+            plotElement.className = `farm-plot ${plot.state}`;
+            plotElement.addEventListener('click', () => {
+                if (plot.state === 'empty') this.plantPlot(index);
+                else if (plot.state === 'ready') this.harvestPlot(index);
+            });
+            farmGrid.appendChild(plotElement);
+        });
+    }
+    
+    plantPlot(index) {
+        const plot = this.state.farm.plots[index];
+        plot.state = 'growing';
+        plot.progress = 0;
+        plot.startTime = Date.now();
+        
+        setTimeout(() => {
+            plot.state = 'ready';
+            this.renderFarm();
+        }, plot.growthTime);
+        
+        this.renderFarm();
+    }
+    
+    harvestPlot(index) {
+        const plot = this.state.farm.plots[index];
+        plot.state = 'empty';
+        this.state.resources.carrots += 1;
+        this.renderFarm();
+        this.updateUI();
+    }
+    
+    plantAll() {
+        this.state.farm.plots.forEach((plot, index) => {
+            if (plot.state === 'empty') {
+                this.plantPlot(index);
+            }
+        });
+    }
+    
+    harvestAll() {
+        this.state.farm.plots.forEach((plot, index) => {
+            if (plot.state === 'ready') {
+                this.harvestPlot(index);
+            }
+        });
+    }
+    
+    // Магазин
+    sellCarrots(amount) {
+        if (this.state.resources.carrots >= amount) {
+            this.state.resources.carrots -= amount;
+            this.addResource('np237', amount * 5);
+            this.updateUI();
+            this.saveGame();
+        }
+    }
+    
+    // Системы
+    addResource(type, amount) {
+        this.state.resources[type] += amount;
     }
     
     startAutoSystems() {
-        // Очищаем предыдущие интервалы
-        if (this.autoInterval) {
-            clearInterval(this.autoInterval);
-        }
-        
         // Авто-доход
         if (this.state.stats.autoIncome > 0) {
-            this.autoInterval = setInterval(() => {
+            setInterval(() => {
                 this.addResource('np237', this.state.stats.autoIncome);
+                this.updateUI();
             }, 1000);
         }
         
         // Авто-кликеры
-        const autoClickerLevel = this.state.upgrades.titan.auto_clicker.level;
+        const autoClickerLevel = this.state.upgrades.auto_clicker.level;
         if (autoClickerLevel > 0) {
             setInterval(() => {
                 for (let i = 0; i < autoClickerLevel; i++) {
                     this.addResource('np237', this.state.stats.perClick);
                 }
+                this.updateUI();
             }, 1000);
         }
     }
     
-    addResource(currency, amount) {
-        this.state.resources[currency] += amount;
-        this.updateUI();
-    }
-    
-    switchSystem(systemName) {
-        // Обновляем активные табы
-        document.querySelectorAll('.system-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelector(`[data-system="${systemName}"]`).classList.add('active');
-        
-        // Показываем соответствующие улучшения
-        document.querySelectorAll('.upgrade-category').forEach(category => {
-            category.classList.remove('active');
-        });
-        document.getElementById(`${systemName}-upgrades`).classList.add('active');
-    }
-    
     updateUI() {
-        // Обновляем ресурсы
-        document.getElementById('np237-amount').textContent = this.formatNumber(this.state.resources.np237);
-        document.getElementById('np239-amount').textContent = this.formatNumber(this.state.resources.np239);
-        document.getElementById('pu238-amount').textContent = this.formatNumber(this.state.resources.pu238);
+        // Ресурсы
+        document.getElementById('np237').textContent = this.state.resources.np237;
+        document.getElementById('np239').textContent = this.state.resources.np239;
+        document.getElementById('pu238').textContent = this.state.resources.pu238;
         
-        // Обновляем статистику
-        document.getElementById('per-click').textContent = this.formatNumber(this.state.stats.perClick);
-        document.getElementById('auto-income').textContent = this.formatNumber(this.state.stats.autoIncome);
+        // Статистика
+        document.getElementById('per-click').textContent = this.state.stats.perClick;
+        document.getElementById('auto-income').textContent = this.state.stats.autoIncome;
         
         // Обновляем кнопки улучшений
         this.updateUpgradeButtons();
+        
+        // Обновляем кнопки магазина
+        this.updateSellButtons();
     }
     
     updateUpgradeButtons() {
-        document.querySelectorAll('.upgrade-item').forEach(item => {
-            const upgradeId = item.dataset.upgrade;
-            const btn = item.querySelector('.buy-btn');
-            const costElement = item.querySelector('.upgrade-cost');
+        document.querySelectorAll('.upgrade').forEach(upgradeElement => {
+            const upgradeId = upgradeElement.dataset.upgrade;
+            const upgrade = this.state.upgrades[upgradeId];
+            const cost = this.getUpgradeCost(upgradeId, upgrade.level);
+            const btn = upgradeElement.querySelector('.buy-btn');
+            const costElement = upgradeElement.querySelector('.upgrade-cost');
             
-            const upgrade = this.getUpgradeState(upgradeId);
-            const cost = this.calculateUpgradeCost(upgradeId, upgrade.level);
+            costElement.textContent = `${cost} Нептуний-237`;
             
-            if (costElement) {
-                costElement.textContent = `Стоимость: ${this.formatNumber(cost)} Нептуний-237`;
-            }
-            
-            if (btn) {
-                if (upgrade.level >= upgrade.maxLevel) {
-                    btn.textContent = 'Макс ур.';
-                    btn.disabled = true;
-                } else {
-                    btn.textContent = this.getUpgradeButtonText(upgradeId);
-                    btn.disabled = this.state.resources.np237 < cost;
-                }
+            if (upgrade.level >= upgrade.maxLevel) {
+                btn.textContent = 'Макс';
+                btn.disabled = true;
+            } else {
+                btn.disabled = this.state.resources.np237 < cost;
             }
         });
     }
     
-    getUpgradeButtonText(upgradeId) {
-        const texts = {
-            basic_research: 'Исследовать',
-            isotope_study: 'Исследовать',
-            water_system: 'Установить',
-            auto_clicker: 'Создать',
-            lab_monkey: 'Нанять'
-        };
-        return texts[upgradeId] || 'Купить';
-    }
-    
-    formatNumber(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
-        }
-        if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
-        }
-        return num.toString();
-    }
-    
-    showProfessorMessage(message, duration = 3000) {
-        const messageElement = document.getElementById('professor-message');
-        if (messageElement) {
-            messageElement.textContent = message;
-            
-            setTimeout(() => {
-                // Возвращаем стандартное сообщение
-                messageElement.textContent = "Кликай по умной морковке, чтобы добывать нептуний!";
-            }, duration);
-        }
+    updateSellButtons() {
+        document.querySelectorAll('.sell-option').forEach(option => {
+            const amount = parseInt(option.dataset.amount);
+            const btn = option.querySelector('.sell-btn');
+            btn.disabled = this.state.resources.carrots < amount;
+        });
     }
     
     saveGame() {
-        localStorage.setItem('neptunCarrotGame', JSON.stringify(this.state));
+        localStorage.setItem('neptunGame', JSON.stringify(this.state));
     }
     
     loadGame() {
-        const saved = localStorage.getItem('neptunCarrotGame');
+        const saved = localStorage.getItem('neptunGame');
         if (saved) {
             this.state = JSON.parse(saved);
-            this.recalculateStats();
         }
-    }
-    
-    recalculateStats() {
-        // Сбрасываем базовые значения
-        this.state.stats.perClick = 1;
-        this.state.stats.autoIncome = 0;
-        
-        // Применяем эффекты улучшений
-        Object.keys(this.state.upgrades.lab).forEach(upgradeId => {
-            const upgrade = this.state.upgrades.lab[upgradeId];
-            for (let i = 0; i < upgrade.level; i++) {
-                this.applyUpgradeEffect(upgradeId);
-            }
-        });
-        
-        Object.keys(this.state.upgrades.neptun).forEach(upgradeId => {
-            const upgrade = this.state.upgrades.neptun[upgradeId];
-            for (let i = 0; i < upgrade.level; i++) {
-                this.applyUpgradeEffect(upgradeId);
-            }
-        });
-        
-        // Обезьяны применяются последними для правильного множителя
-        Object.keys(this.state.upgrades.monkeys).forEach(upgradeId => {
-            const upgrade = this.state.upgrades.monkeys[upgradeId];
-            for (let i = 0; i < upgrade.level; i++) {
-                this.applyUpgradeEffect(upgradeId);
-            }
-        });
     }
 }
 
-// Инициализация игры
+// Запуск игры
 document.addEventListener('DOMContentLoaded', () => {
-    window.game = new NeptunCarrotGame();
+    window.game = new NeptunGame();
     
-    // Инициализация Telegram Web App
     if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-        
-        // Настройка интерфейса под Telegram
-        document.body.style.backgroundColor = 'var(--bunker-dark)';
     }
 });
