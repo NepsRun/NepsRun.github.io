@@ -8,60 +8,57 @@ body {
     font-family: Arial, sans-serif;
     background: #1a1a2e;
     color: white;
-    overflow: hidden;
+    padding: 10px;
 }
 
 .app {
-    max-width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-/* Верхняя панель */
-.top-panel {
+/* Ресурсы */
+.resources {
     display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    background: #16213e;
-    border-bottom: 2px solid #4cc9f0;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .resource {
+    flex: 1;
+    background: #16213e;
+    padding: 10px;
+    border-radius: 10px;
     text-align: center;
-    padding: 5px 10px;
+    border: 2px solid #4cc9f0;
 }
 
-.resource-icon {
-    font-size: 1.5em;
+.resource span:first-child {
+    font-size: 24px;
     display: block;
 }
 
-.resource-amount {
-    font-size: 1.2em;
+.resource span:nth-child(2) {
+    font-size: 20px;
     font-weight: bold;
     display: block;
+    margin: 5px 0;
 }
 
-.resource-name {
-    font-size: 0.7em;
+.resource small {
     color: #b8b8b8;
+    font-size: 12px;
 }
 
-/* Игровая зона */
-.game-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+/* Кликер */
+.clicker {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .carrot {
     font-size: 100px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     transition: transform 0.1s;
     user-select: none;
 }
@@ -70,58 +67,41 @@ body {
     transform: scale(0.9);
 }
 
-.click-stats {
+.stats {
     display: flex;
-    gap: 30px;
+    justify-content: center;
+    gap: 20px;
     background: rgba(255,255,255,0.1);
-    padding: 15px 25px;
+    padding: 10px;
     border-radius: 10px;
 }
 
-.stat {
-    text-align: center;
-}
-
-.stat span {
-    display: block;
-    font-size: 0.9em;
-    color: #b8b8b8;
-    margin-bottom: 5px;
-}
-
-.stat strong {
-    color: #4cc9f0;
-    font-size: 1.1em;
-}
-
 /* Навигация */
-.bottom-nav {
+.tabs {
     display: flex;
     background: #0f3460;
-    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
 }
 
-.nav-btn {
+.tab-btn {
     flex: 1;
-    padding: 12px 5px;
-    background: transparent;
+    padding: 10px;
+    background: none;
     border: none;
     color: white;
     cursor: pointer;
     border-radius: 5px;
-    margin: 0 2px;
 }
 
-.nav-btn.active {
+.tab-btn.active {
     background: #4361ee;
 }
 
-/* Контент вкладок */
+/* Контент */
 .tab-content {
-    height: 300px;
-    overflow-y: auto;
-    background: #1e293b;
-    padding: 15px;
+    min-height: 300px;
 }
 
 .tab-panel {
@@ -133,44 +113,40 @@ body {
 }
 
 /* Улучшения */
-.upgrade-category {
-    margin-bottom: 20px;
-}
-
-.upgrade-category h3 {
-    margin-bottom: 10px;
-    color: #4cc9f0;
-}
-
 .upgrade {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: rgba(255,255,255,0.05);
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
     border: 1px solid rgba(76, 201, 240, 0.3);
 }
 
-.upgrade-info h4 {
+.upgrade h3 {
     margin-bottom: 5px;
+    color: #4cc9f0;
 }
 
-.upgrade-cost {
-    color: #4cc9f0;
-    font-size: 0.9em;
-    margin-top: 5px;
+.upgrade p {
+    color: #b8b8b8;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.cost {
+    color: #f59e0b;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .buy-btn {
-    padding: 8px 15px;
+    width: 100%;
+    padding: 10px;
     background: #7209b7;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    white-space: nowrap;
+    font-weight: bold;
 }
 
 .buy-btn:disabled {
@@ -183,89 +159,72 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin: 15px 0;
+    margin-bottom: 15px;
 }
 
-.farm-plot {
+.plot {
     aspect-ratio: 1;
     background: #8b4513;
     border: 2px solid #654321;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 30px;
     cursor: pointer;
-    font-size: 2em;
 }
 
-.farm-plot.empty::before {
-    content: '➕';
-    opacity: 0.7;
+.plot.empty {
+    background: #5a3921;
 }
 
-.farm-plot.growing::before {
-    content: '🌱';
+.plot.growing {
+    background: #2d5016;
 }
 
-.farm-plot.ready::before {
-    content: '🥕';
+.plot.ready {
+    background: #e67e22;
 }
 
-.farm-controls {
+.farm-buttons {
     display: flex;
     gap: 10px;
 }
 
-.farm-btn {
+.farm-buttons button {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     background: #4361ee;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 /* Магазин */
-.sell-option {
+.shop-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: rgba(255,255,255,0.05);
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .sell-btn {
-    padding: 6px 12px;
+    padding: 8px 15px;
     background: #f59e0b;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .sell-btn:disabled {
     background: #666;
     cursor: not-allowed;
-}
-
-/* Лидерборд */
-.leaderboard {
-    /* Стили для лидерборда */
-}
-
-/* Скроллбар */
-.tab-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.tab-content::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.1);
-}
-
-.tab-content::-webkit-scrollbar-thumb {
-    background: #4cc9f0;
-    border-radius: 3px;
 }
