@@ -3,158 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neptun-Умная морковка</title>
+    <title>Neptun Морковка</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="app">
-        <!-- Фон бункера -->
-        <div class="bunker-background">
-            <div class="bunker-walls"></div>
-            <div class="bunker-pipes"></div>
+        <!-- Верхняя панель с ресурсами -->
+        <div class="top-panel">
+            <div class="resource">
+                <span class="resource-icon">🥕</span>
+                <span class="resource-amount" id="np237">100</span>
+                <span class="resource-name">Нептуний-237</span>
+            </div>
+            <div class="resource">
+                <span class="resource-icon">⚡</span>
+                <span class="resource-amount" id="np239">0</span>
+                <span class="resource-name">Нептуний-239</span>
+            </div>
+            <div class="resource">
+                <span class="resource-icon">🔥</span>
+                <span class="resource-amount" id="pu238">0</span>
+                <span class="resource-name">Плутоний-238</span>
+            </div>
         </div>
 
-        <!-- Шапка с ресурсами -->
-        <header class="header">
-            <div class="resources">
-                <div class="resource-card">
-                    <div class="resource-icon">🥕</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Нептуний-237</div>
-                        <div class="resource-amount" id="np237-amount">100</div>
+        <!-- Основная игровая зона -->
+        <div class="game-area">
+            <div class="clicker-section">
+                <div class="carrot" id="main-carrot">🥕</div>
+                <div class="click-stats">
+                    <div class="stat">
+                        <span>За клик:</span>
+                        <strong id="per-click">1</strong>
                     </div>
-                </div>
-                <div class="resource-card">
-                    <div class="resource-icon">⚡</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Нептуний-239</div>
-                        <div class="resource-amount" id="np239-amount">0</div>
-                    </div>
-                </div>
-                <div class="resource-card">
-                    <div class="resource-icon">🔥</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Плутоний-238</div>
-                        <div class="resource-amount" id="pu238-amount">0</div>
+                    <div class="stat">
+                        <span>Авто-доход:</span>
+                        <strong id="auto-income">0</strong>/сек
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Основная область кликера -->
-        <main class="clicker-area">
-            <div class="central-carrot">
-                <div class="carrot-container" id="main-carrot">
-                    <div class="carrot">🥕</div>
-                    <div class="carrot-glow"></div>
-                </div>
-                <div class="click-effect" id="click-effect"></div>
-            </div>
-            
-            <div class="stats-panel">
-                <div class="stat">
-                    <span class="stat-label">Нептуния/клик:</span>
-                    <span class="stat-value" id="per-click">1</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Авто-доход:</span>
-                    <span class="stat-value" id="auto-income">0</span>/сек
-                </div>
-            </div>
-        </main>
+        <!-- Нижняя навигация -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" data-tab="upgrades">Улучшения</button>
+            <button class="nav-btn" data-tab="farm">Огород</button>
+            <button class="nav-btn" data-tab="market">Магазин</button>
+            <button class="nav-btn" data-tab="leaderboard">Лидеры</button>
+        </div>
 
-        <!-- Системы улучшений -->
-        <section class="systems-panel">
-            <div class="system-tabs">
-                <button class="system-tab active" data-system="lab">
-                    <div class="tab-icon">🧪</div>
-                    <div class="tab-name">Лаборатория</div>
-                </button>
-                <button class="system-tab" data-system="neptun">
-                    <div class="tab-icon">💧</div>
-                    <div class="tab-name">Нептун</div>
-                </button>
-                <button class="system-tab" data-system="titan">
-                    <div class="tab-icon">⚙️</div>
-                    <div class="tab-name">Титан</div>
-                </button>
-                <button class="system-tab" data-system="monkeys">
-                    <div class="tab-icon">🐵</div>
-                    <div class="tab-name">Обезьяны</div>
-                </button>
-            </div>
-
-            <div class="upgrades-container">
-                <!-- Лаборатория -->
-                <div class="upgrade-category active" id="lab-upgrades">
-                    <div class="upgrade-item" data-upgrade="basic_research">
-                        <div class="upgrade-icon">🔬</div>
+        <!-- Контент вкладок -->
+        <div class="tab-content">
+            <!-- Улучшения -->
+            <div class="tab-panel active" id="upgrades-panel">
+                <div class="upgrade-category">
+                    <h3>🧪 Лаборатория</h3>
+                    <div class="upgrade" data-upgrade="basic_research">
                         <div class="upgrade-info">
                             <h4>Базовые исследования</h4>
                             <p>+1 нептуния за клик</p>
-                            <div class="upgrade-cost">Стоимость: 50 Нептуний-237</div>
+                            <div class="upgrade-cost">50 Нептуний-237</div>
                         </div>
-                        <button class="buy-btn">Исследовать</button>
+                        <button class="buy-btn">Купить</button>
                     </div>
-                    
-                    <div class="upgrade-item" data-upgrade="isotope_study">
-                        <div class="upgrade-icon">📊</div>
+                    <div class="upgrade" data-upgrade="isotope_study">
                         <div class="upgrade-info">
                             <h4>Изучение изотопов</h4>
                             <p>+2 нептуния за клик</p>
-                            <div class="upgrade-cost">Стоимость: 200 Нептуний-237</div>
+                            <div class="upgrade-cost">200 Нептуний-237</div>
                         </div>
-                        <button class="buy-btn">Исследовать</button>
+                        <button class="buy-btn">Купить</button>
                     </div>
                 </div>
 
-                <!-- Система Нептун -->
-                <div class="upgrade-category" id="neptun-upgrades">
-                    <div class="upgrade-item" data-upgrade="water_system">
-                        <div class="upgrade-icon">💦</div>
+                <div class="upgrade-category">
+                    <h3>💧 Система Нептун</h3>
+                    <div class="upgrade" data-upgrade="water_system">
                         <div class="upgrade-info">
                             <h4>Водная система</h4>
                             <p>+1 авто-доход в секунду</p>
-                            <div class="upgrade-cost">Стоимость: 100 Нептуний-237</div>
+                            <div class="upgrade-cost">100 Нептуний-237</div>
                         </div>
-                        <button class="buy-btn">Установить</button>
+                        <button class="buy-btn">Купить</button>
                     </div>
                 </div>
 
-                <!-- Титановые системы -->
-                <div class="upgrade-category" id="titan-upgrades">
-                    <div class="upgrade-item" data-upgrade="auto_clicker">
-                        <div class="upgrade-icon">🤖</div>
+                <div class="upgrade-category">
+                    <h3>⚙️ Титановые системы</h3>
+                    <div class="upgrade" data-upgrade="auto_clicker">
                         <div class="upgrade-info">
                             <h4>Авто-кликер</h4>
                             <p>Автоматически кликает 1 раз в секунду</p>
-                            <div class="upgrade-cost">Стоимость: 300 Нептуний-237</div>
+                            <div class="upgrade-cost">300 Нептуний-237</div>
                         </div>
-                        <button class="buy-btn">Создать</button>
-                    </div>
-                </div>
-
-                <!-- Обезьяны -->
-                <div class="upgrade-category" id="monkeys-upgrades">
-                    <div class="upgrade-item" data-upgrade="lab_monkey">
-                        <div class="upgrade-icon">🐵</div>
-                        <div class="upgrade-info">
-                            <h4>Обезьяна-лаборант</h4>
-                            <p>+5% ко всем доходам</p>
-                            <div class="upgrade-cost">Стоимость: 500 Нептуний-237</div>
-                        </div>
-                        <button class="buy-btn">Нанять</button>
+                        <button class="buy-btn">Купить</button>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Профессор Банансон -->
-        <div class="professor-panel">
-            <div class="professor-avatar">🐵</div>
-            <div class="professor-message" id="professor-message">
-                Добро пожаловать в бункер "Нептуний-237"! Кликай по умной морковке!
+            <!-- Огород -->
+            <div class="tab-panel" id="farm-panel">
+                <h3>🌱 Огород</h3>
+                <div class="farm-grid">
+                    <!-- Грядки будут здесь -->
+                </div>
+                <div class="farm-controls">
+                    <button class="farm-btn" id="plant-all">Посадить все</button>
+                    <button class="farm-btn" id="harvest-all">Собрать все</button>
+                </div>
+            </div>
+
+            <!-- Магазин -->
+            <div class="tab-panel" id="market-panel">
+                <h3>🏪 Магазин</h3>
+                <div class="sell-options">
+                    <div class="sell-option" data-amount="1">
+                        <span>1 морковка → 5 нептуния</span>
+                        <button class="sell-btn">Продать</button>
+                    </div>
+                    <div class="sell-option" data-amount="10">
+                        <span>10 морковок → 50 нептуния</span>
+                        <button class="sell-btn">Продать</button>
+                    </div>
+                    <div class="sell-option" data-amount="50">
+                        <span>50 морковок → 250 нептуния</span>
+                        <button class="sell-btn">Продать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Лидеры -->
+            <div class="tab-panel" id="leaderboard-panel">
+                <h3>🏆 Лидеры</h3>
+                <div class="leaderboard">
+                    <!-- Лидерборд будет здесь -->
+                </div>
             </div>
         </div>
     </div>
