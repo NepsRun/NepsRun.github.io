@@ -3,241 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neptun-Умная морковка</title>
+    <title>Neptun Farm</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="app">
-        <!-- Фон бункера -->
-        <div class="bunker-background">
-            <div class="bunker-walls"></div>
-        </div>
+        <!-- Фон с градиентом -->
+        <div class="background-gradient"></div>
 
-        <!-- Шапка с ресурсами -->
-        <header class="header">
-            <div class="bunker-level-indicator">
-                <div class="level-info">
-                    <span class="level-label">Уровень бункера</span>
-                    <span class="level-number" id="bunker-level">1</span>
-                </div>
-                <div class="level-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="level-progress"></div>
+        <!-- Основной контейнер -->
+        <div class="main-container">
+            <!-- Шапка -->
+            <header class="header">
+                <div class="player-info">
+                    <div class="level-badge">
+                        <span class="level-number">1</span>
                     </div>
-                    <span class="progress-text" id="level-progress-text">0/100</span>
-                </div>
-            </div>
-            
-            <div class="resources">
-                <div class="resource-card">
-                    <div class="resource-icon">🥕</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Нептуний</div>
-                        <div class="resource-amount" id="np-amount">100</div>
-                    </div>
-                </div>
-                <div class="resource-card">
-                    <div class="resource-icon">🌱</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Морковка</div>
-                        <div class="resource-amount" id="carrots-amount">0</div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Основная область -->
-        <main class="main-area">
-            <!-- Кликер -->
-            <div class="game-section active" id="clicker-section">
-                <div class="central-carrot">
-                    <div class="carrot-container" id="main-carrot">
-                        <div class="carrot">🥕</div>
-                        <div class="carrot-glow"></div>
-                        <div class="quantum-particles"></div>
-                    </div>
-                    <div class="click-effect" id="click-effect"></div>
-                </div>
-                
-                <div class="stats-panel">
-                    <div class="stat">
-                        <span class="stat-label">Нептуния/клик:</span>
-                        <span class="stat-value" id="per-click">1</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Авто-доход:</span>
-                        <span class="stat-value" id="auto-income">0</span>/сек
-                    </div>
-                </div>
-            </div>
-
-            <!-- Огород -->
-            <div class="game-section" id="farm-section">
-                <div class="farm-container">
-                    <h3>🌱 Огород Нептуния</h3>
-                    <div class="farm-grid" id="farm-grid">
-                        <!-- Грядки будут сгенерированы через JS -->
-                    </div>
-                    <div class="farm-controls">
-                        <button class="farm-btn" id="plant-all-btn">🌱 Посадить все</button>
-                        <button class="farm-btn" id="harvest-all-btn">🔄 Собрать все</button>
-                    </div>
-                    <div class="farm-info">
-                        <div class="farm-stat">
-                            <span>Готово к сбору:</span>
-                            <span id="ready-count">0</span>
+                    <div class="resources">
+                        <div class="resource">
+                            <div class="resource-icon">⚡</div>
+                            <div class="resource-amount">150</div>
+                            <div class="resource-name">Np</div>
                         </div>
-                        <div class="farm-stat">
-                            <span>Растет:</span>
-                            <span id="growing-count">0</span>
+                        <div class="resource">
+                            <div class="resource-icon">🥕</div>
+                            <div class="resource-amount">5</div>
+                            <div class="resource-name">Carrots</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            <!-- Магазин -->
-            <div class="game-section" id="shop-section">
-                <div class="shop-container">
-                    <h3>🏪 Магазин Нептуния</h3>
-                    <div class="sell-section">
-                        <h4>Продажа морковки</h4>
+            <!-- Игровая зона -->
+            <main class="game-area">
+                <!-- Кликер -->
+                <section class="game-section active" id="clicker">
+                    <div class="clicker-container">
+                        <div class="carrot-display">
+                            <div class="carrot" id="main-carrot">
+                                <div class="carrot-icon">🥕</div>
+                                <div class="carrot-glow"></div>
+                            </div>
+                            <div class="click-stats">
+                                <div class="stat">
+                                    <span>Per click:</span>
+                                    <strong>+1 Np</strong>
+                                </div>
+                                <div class="stat">
+                                    <span>Auto income:</span>
+                                    <strong>+0 Np/s</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ферма -->
+                <section class="game-section" id="farm">
+                    <div class="farm-container">
+                        <h2 class="section-title">Neptun Farm</h2>
+                        <div class="farm-grid">
+                            <!-- Грядки будут добавлены через JS -->
+                        </div>
+                        <div class="farm-controls">
+                            <button class="btn primary" id="plant-all">Plant All</button>
+                            <button class="btn secondary" id="harvest-all">Harvest All</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Магазин -->
+                <section class="game-section" id="market">
+                    <div class="market-container">
+                        <h2 class="section-title">Market</h2>
                         <div class="sell-options">
-                            <div class="sell-option" data-amount="1">
-                                <span>1 морковка</span>
-                                <span>→ 5 нептуния</span>
-                                <button class="sell-btn">Продать</button>
+                            <div class="sell-card">
+                                <div class="sell-info">
+                                    <span>1 Carrot</span>
+                                    <span class="price">→ 5 Np</span>
+                                </div>
+                                <button class="btn sell">Sell</button>
                             </div>
-                            <div class="sell-option" data-amount="10">
-                                <span>10 морковки</span>
-                                <span>→ 50 нептуния</span>
-                                <button class="sell-btn">Продать</button>
-                            </div>
-                            <div class="sell-option" data-amount="50">
-                                <span>50 морковки</span>
-                                <span>→ 250 нептуния</span>
-                                <button class="sell-btn">Продать</button>
-                            </div>
-                            <div class="sell-option" data-amount="100">
-                                <span>100 морковки</span>
-                                <span>→ 500 нептуния</span>
-                                <button class="sell-btn">Продать</button>
+                            <div class="sell-card">
+                                <div class="sell-info">
+                                    <span>10 Carrots</span>
+                                    <span class="price">→ 50 Np</span>
+                                </div>
+                                <button class="btn sell">Sell</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <!-- Лидерборд -->
-            <div class="game-section" id="leaderboard-section">
-                <div class="leaderboard-container">
-                    <h3>🏆 Таблица лидеров</h3>
-                    <div class="leaderboard-list" id="leaderboard-list">
-                        <!-- Заполнится через JS -->
+                <!-- Улучшения -->
+                <section class="game-section" id="upgrades">
+                    <div class="upgrades-container">
+                        <h2 class="section-title">Upgrades</h2>
+                        <div class="upgrades-grid">
+                            <div class="upgrade-card">
+                                <div class="upgrade-icon">🔬</div>
+                                <div class="upgrade-content">
+                                    <h3>Basic Research</h3>
+                                    <p>+1 Np per click</p>
+                                    <div class="upgrade-cost">50 Np</div>
+                                </div>
+                                <button class="btn upgrade">Buy</button>
+                            </div>
+                            <div class="upgrade-card">
+                                <div class="upgrade-icon">💧</div>
+                                <div class="upgrade-content">
+                                    <h3>Water System</h3>
+                                    <p>+1 Np per second</p>
+                                    <div class="upgrade-cost">100 Np</div>
+                                </div>
+                                <button class="btn upgrade">Buy</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="player-stats">
-                        <h4>Ваша статистика</h4>
-                        <div class="stat-row">
-                            <span>Место:</span>
-                            <span id="player-rank">-</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>Нептуния:</span>
-                            <span id="player-np">0</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>Уровень бункера:</span>
-                            <span id="player-bunker-level">1</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+                </section>
+            </main>
 
-        <!-- Нижняя навигация -->
-        <nav class="bottom-nav">
-            <button class="nav-btn active" data-tab="clicker">⚡ Кликер</button>
-            <button class="nav-btn" data-tab="farm">🌱 Огород</button>
-            <button class="nav-btn" data-tab="shop">🏪 Магазин</button>
-            <button class="nav-btn" data-tab="leaderboard">🏆 Лидеры</button>
-        </nav>
-
-        <!-- Системы улучшений -->
-        <section class="systems-panel">
-            <div class="system-tabs">
-                <button class="system-tab active" data-system="lab">
-                    <div class="tab-icon">🧪</div>
-                    <div class="tab-name">Лаборатория</div>
+            <!-- Навигация -->
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-tab="clicker">
+                    <div class="nav-icon">⚡</div>
+                    <span>Tap</span>
                 </button>
-                <button class="system-tab" data-system="neptun">
-                    <div class="tab-icon">💧</div>
-                    <div class="tab-name">Нептун</div>
+                <button class="nav-item" data-tab="farm">
+                    <div class="nav-icon">🌱</div>
+                    <span>Farm</span>
                 </button>
-                <button class="system-tab" data-system="titan">
-                    <div class="tab-icon">⚙️</div>
-                    <div class="tab-name">Титан</div>
+                <button class="nav-item" data-tab="market">
+                    <div class="nav-icon">🏪</div>
+                    <span>Market</span>
                 </button>
-            </div>
-
-            <div class="upgrades-container">
-                <!-- Лаборатория -->
-                <div class="upgrade-category active" id="lab-upgrades">
-                    <div class="upgrade-item" data-upgrade="basic_research">
-                        <div class="upgrade-icon">🔬</div>
-                        <div class="upgrade-info">
-                            <h4>Базовые исследования</h4>
-                            <p>+1 нептуния за клик</p>
-                            <div class="upgrade-cost">Стоимость: 50 Np</div>
-                        </div>
-                        <button class="buy-btn">Исследовать</button>
-                    </div>
-                    
-                    <div class="upgrade-item" data-upgrade="carrot_boost">
-                        <div class="upgrade-icon">🚀</div>
-                        <div class="upgrade-info">
-                            <h4>Ускорение роста</h4>
-                            <p>Морковка растет на 20% быстрее</p>
-                            <div class="upgrade-cost">Стоимость: 200 Np</div>
-                        </div>
-                        <button class="buy-btn">Исследовать</button>
-                    </div>
-                </div>
-
-                <!-- Система Нептун -->
-                <div class="upgrade-category" id="neptun-upgrades">
-                    <div class="upgrade-item" data-upgrade="water_system">
-                        <div class="upgrade-icon">💦</div>
-                        <div class="upgrade-info">
-                            <h4>Водная система</h4>
-                            <p>+1 авто-доход в секунду</p>
-                            <div class="upgrade-cost">Стоимость: 100 Np</div>
-                        </div>
-                        <button class="buy-btn">Установить</button>
-                    </div>
-                </div>
-
-                <!-- Титановые системы -->
-                <div class="upgrade-category" id="titan-upgrades">
-                    <div class="upgrade-item" data-upgrade="auto_clicker">
-                        <div class="upgrade-icon">🤖</div>
-                        <div class="upgrade-info">
-                            <h4>Авто-кликер</h4>
-                            <p>Автоматически кликает 1 раз в секунду</p>
-                            <div class="upgrade-cost">Стоимость: 300 Np</div>
-                        </div>
-                        <button class="buy-btn">Создать</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Профессор Банансон -->
-        <div class="professor-panel">
-            <div class="professor-avatar">🐵</div>
-            <div class="professor-message" id="professor-message">
-                Добро пожаловать! Кликай по морковке или выращивай её в огороде!
-            </div>
-            <button class="close-professor" id="close-professor">✕</button>
+                <button class="nav-item" data-tab="upgrades">
+                    <div class="nav-icon">🚀</div>
+                    <span>Upgrades</span>
+                </button>
+            </nav>
         </div>
     </div>
 
