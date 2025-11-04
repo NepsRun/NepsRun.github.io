@@ -1,37 +1,223 @@
-/* Добавляем к предыдущим стилям */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/* Основные области игры */
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #10b981;
+    --accent: #f59e0b;
+    --background: #0f172a;
+    --surface: #1e293b;
+    --surface-light: #334155;
+    --text: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --border: #475569;
+    --success: #22c55e;
+    --warning: #eab308;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+    overflow: hidden;
+}
+
+.app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.background-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--background) 0%, #1e1b4b 100%);
+    z-index: -1;
+}
+
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Шапка */
+.header {
+    padding: 20px 0 16px;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.level-badge {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.resources {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.resource {
+    flex: 1;
+    background: var(--surface);
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.resource-icon {
+    font-size: 1.5em;
+    margin-bottom: 4px;
+}
+
+.resource-amount {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.resource-name {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+}
+
+/* Игровая зона */
+.game-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
 .game-section {
     display: none;
-    flex: 1;
-    padding: 20px;
+    height: 100%;
+    padding-bottom: 80px;
 }
 
 .game-section.active {
-    display: flex;
-    flex-direction: column;
+    display: block;
 }
 
-/* Огород */
-.farm-container {
+.section-title {
     text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Кликер */
+.clicker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px 0;
+}
+
+.carrot-display {
+    text-align: center;
+}
+
+.carrot {
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 32px;
+}
+
+.carrot-icon {
+    font-size: 8em;
+    filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.4));
+    transition: transform 0.1s ease;
+}
+
+.carrot:active .carrot-icon {
+    transform: scale(0.95);
+}
+
+.carrot-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.click-stats {
+    display: flex;
+    gap: 24px;
+    background: var(--surface);
+    padding: 16px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat span {
+    display: block;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.stat strong {
+    font-size: 1.1em;
+    color: var(--accent);
+}
+
+/* Ферма */
+.farm-container {
+    padding: 20px 0;
 }
 
 .farm-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 20px 0;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .farm-plot {
     aspect-ratio: 1;
-    background: linear-gradient(45deg, #8b4513, #a0522d);
-    border: 2px solid #654321;
-    border-radius: 10px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,167 +227,287 @@
     overflow: hidden;
 }
 
+.farm-plot.empty {
+    background: var(--surface-light);
+    border-style: dashed;
+}
+
+.farm-plot.growing {
+    background: linear-gradient(135deg, var(--surface), #164e63);
+}
+
+.farm-plot.ready {
+    background: linear-gradient(135deg, var(--surface), #166534);
+    border-color: var(--success);
+}
+
+.farm-plot::before {
+    font-size: 2em;
+    transition: all 0.3s ease;
+}
+
 .farm-plot.empty::before {
     content: '➕';
-    font-size: 1.5em;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 .farm-plot.growing::before {
     content: '🌱';
-    font-size: 1.5em;
-    animation: grow-pulse 2s infinite;
+    animation: pulse 2s infinite;
 }
 
 .farm-plot.ready::before {
     content: '🥕';
-    font-size: 1.5em;
-    animation: ready-glow 1s infinite alternate;
+    animation: bounce 1s infinite;
 }
 
 .farm-plot .progress {
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 5px;
-    background: #4cc9f0;
+    height: 4px;
+    background: var(--primary);
     transition: width 0.3s ease;
-}
-
-@keyframes grow-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-@keyframes ready-glow {
-    from { filter: drop-shadow(0 0 5px #ff8c00); }
-    to { filter: drop-shadow(0 0 15px #ff4500); }
 }
 
 .farm-controls {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin: 15px 0;
+    gap: 12px;
 }
 
-.farm-btn {
-    padding: 10px 15px;
-    background: linear-gradient(45deg, #7209b7, #4361ee);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
-.farm-btn:hover {
-    transform: translateY(-2px);
-}
-
-.farm-info {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 10px;
-}
-
-.farm-stat {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(76, 201, 240, 0.3);
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
 
 /* Магазин */
-.shop-container {
-    text-align: center;
-}
-
-.sell-section {
-    margin: 20px 0;
+.market-container {
+    padding: 20px 0;
 }
 
 .sell-options {
-    display: grid;
-    gap: 10px;
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.sell-option {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(76, 201, 240, 0.2);
+    flex-direction: column;
+    gap: 12px;
 }
 
-.sell-btn {
-    padding: 6px 12px;
-    background: linear-gradient(45deg, #ff9e00, #ff6b00);
-    color: white;
+.sell-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.sell-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sell-info span:first-child {
+    font-weight: 600;
+}
+
+.price {
+    color: var(--accent);
+    font-size: 0.9em;
+}
+
+/* Улучшения */
+.upgrades-container {
+    padding: 20px 0;
+}
+
+.upgrades-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.upgrade-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.upgrade-icon {
+    font-size: 2em;
+    width: 50px;
+    text-align: center;
+}
+
+.upgrade-content {
+    flex: 1;
+}
+
+.upgrade-content h3 {
+    margin-bottom: 4px;
+    font-size: 1em;
+}
+
+.upgrade-content p {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin-bottom: 6px;
+}
+
+.upgrade-cost {
+    color: var(--accent);
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+/* Кнопки */
+.btn {
+    padding: 10px 16px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-size: 0.9em;
 }
 
-.sell-btn:hover:not(:disabled) {
+.btn.primary {
+    background: var(--primary);
+    color: white;
+    flex: 1;
+}
+
+.btn.primary:hover {
+    background: var(--primary-dark);
     transform: translateY(-2px);
 }
 
-.sell-btn:disabled {
-    background: #666;
-    cursor: not-allowed;
+.btn.secondary {
+    background: var(--surface-light);
+    color: var(--text);
+    flex: 1;
 }
 
-/* Нижняя навигация */
+.btn.sell, .btn.upgrade {
+    background: var(--secondary);
+    color: white;
+    min-width: 70px;
+}
+
+.btn.sell:hover, .btn.upgrade:hover {
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Навигация */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
     display: flex;
-    padding: 10px;
-    backdrop-filter: blur(10px);
-    z-index: 100;
+    padding: 12px 16px;
+    backdrop-filter: blur(20px);
 }
 
-.nav-btn {
+.nav-item {
     flex: 1;
-    padding: 10px 5px;
-    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
     border: none;
-    color: #fff;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    padding: 8px 4px;
     border-radius: 8px;
-    margin: 0 2px;
+    transition: all 0.3s ease;
 }
 
-.nav-btn.active {
-    background: #4361ee;
-    color: #fff;
+.nav-item.active {
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.nav-icon {
+    font-size: 1.4em;
+}
+
+.nav-item span {
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+/* Анимации */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.carrot-icon {
+    animation: float 3s ease-in-out infinite;
 }
 
 /* Адаптивность */
-@media (max-width: 480px) {
+@media (max-width: 380px) {
+    .main-container {
+        padding: 0 12px;
+    }
+    
+    .carrot-icon {
+        font-size: 6em;
+    }
+    
+    .click-stats {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
     .farm-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
-    .sell-option {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-    }
-    
-    .nav-btn {
-        font-size: 0.8em;
-        padding: 8px 3px;
-    }
+}
+
+/* Уведомления */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--surface);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.notification.success {
+    border-left: 4px solid var(--success);
+}
+
+.notification.info {
+    border-left: 4px solid var(--primary);
 }
