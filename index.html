@@ -5,416 +5,153 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Космическая ферма Нептуна</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #1a1a1a;
-            --bg-card: #2a2a2a;
-            --accent-red: #ff2a2a;
-            --accent-blue: #2a7aff;
-            --text-primary: #ffffff;
-            --text-secondary: #cccccc;
-            --border-radius: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .app-container {
-            display: flex;
-            height: 100vh;
-        }
-
-        /* Основной контент */
-        .main-content {
-            flex: 1;
-            padding: 16px;
-            overflow-y: auto;
-        }
-
-        /* Правая панель навигации */
-        .side-nav {
-            width: 80px;
-            background: var(--bg-secondary);
-            border-left: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-        }
-
-        .nav-item {
-            width: 60px;
-            height: 60px;
-            margin: 8px auto;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-item.active {
-            background: var(--accent-red);
-        }
-
-        .nav-item:hover {
-            background: #333;
-        }
-
-        /* Заголовок */
-        .header {
-            background: var(--bg-secondary);
-            padding: 16px;
-            border-radius: var(--border-radius);
-            margin-bottom: 16px;
-        }
-
-        .stats {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .stat {
-            background: var(--bg-card);
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Карточки */
-        .card {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--accent-red);
-        }
-
-        /* Кнопки */
-        .btn {
-            background: var(--accent-red);
-            border: none;
-            border-radius: var(--border-radius);
-            color: white;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 12px;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Ферма */
-        .farm-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 16px 0;
-        }
-
-        .plot {
-            aspect-ratio: 1;
-            background: var(--bg-card);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .plot.ready {
-            background: #2a5a2a;
-        }
-
-        /* Кликер */
-        .clicker-area {
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        .carrot-btn {
-            width: 120px;
-            height: 120px;
-            background: var(--accent-red);
-            border: none;
-            border-radius: 50%;
-            font-size: 48px;
-            cursor: pointer;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carrot-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Скрытие вкладок */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Быстрая статистика */
-        .quick-stats {
-            display: flex;
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        .quick-stat {
-            background: var(--bg-card);
-            padding: 12px;
-            border-radius: var(--border-radius);
-            flex: 1;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Параллакс фон -->
+    <div class="parallax-bg">
+        <div class="parallax-layer layer-1" data-speed="0.1"></div>
+        <div class="parallax-layer layer-2" data-speed="0.3"></div>
+        <div class="parallax-layer layer-3" data-speed="0.5"></div>
+        <div class="parallax-layer layer-4" data-speed="0.7"></div>
+    </div>
+
     <div class="app-container">
         <!-- Основной контент -->
         <div class="main-content">
             <!-- Заголовок -->
             <header class="header">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="font-size: 24px;">👨‍🚀</div>
-                    <div>
-                        <div style="font-weight: 600;">Космическая ферма</div>
-                        <div style="font-size: 14px; color: var(--text-secondary);">Уровень <span id="playerLevel">1</span></div>
+                <div class="user-info">
+                    <div class="user-avatar cosmic-avatar">👨‍🚀</div>
+                    <div class="user-level">
+                        <span class="level-label">Уровень космонавта</span>
+                        <div class="level-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="levelProgress"></div>
+                            </div>
+                            <span class="level-text"><span id="playerLevel">1</span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="stats">
-                    <div class="stat">
-                        <span>🥕</span>
-                        <span id="carrots">100</span>
+                    <div class="stat currency cosmic-stat">
+                        <span class="stat-icon">🥕</span>
+                        <span class="stat-value" id="carrots">1,024</span>
                     </div>
-                    <div class="stat">
-                        <span>🔵</span>
-                        <span id="neptunium">10</span>
+                    <div class="stat neptunium cosmic-stat">
+                        <span class="stat-icon">🔵</span>
+                        <span class="stat-value" id="neptunium">56</span>
                     </div>
                 </div>
             </header>
 
-            <!-- Главная -->
+            <!-- Вкладки контента -->
             <div class="tab-content active" id="main">
-                <div class="card">
-                    <h2 class="card-title">Космическая ферма Нептуна</h2>
-                    <p>Добро пожаловать на высокотехнологичную ферму будущего!</p>
-                    
-                    <div class="quick-stats">
-                        <div class="quick-stat">
-                            <div>Опыт</div>
-                            <div><span id="playerExp">0</span>/100</div>
-                        </div>
-                        <div class="quick-stat">
-                            <div>Автодоход</div>
-                            <div><span id="autoIncome">0</span>/сек</div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn" id="quickHarvest">Быстрый сбор</button>
-                </div>
-                
-                <div class="card">
-                    <h3 class="card-title">Бот Густав</h3>
-                    <p>Автоматизированная система управления фермой</p>
-                    <button class="btn" id="connectBot">Подключиться к боту</button>
-                </div>
+                <!-- Контент главной страницы -->
             </div>
 
-            <!-- Ферма -->
             <div class="tab-content" id="farm">
-                <div class="card">
-                    <h2 class="card-title">Гидропонная система</h2>
-                    <p>Управление модулями выращивания моркови</p>
-                    
-                    <div class="farm-grid" id="farmGrid">
-                        <!-- Грядки будут созданы через JS -->
-                    </div>
-                    
-                    <button class="btn" id="plantAllBtn">Активировать все модули</button>
-                </div>
+                <!-- Контент фермы -->
             </div>
 
-            <!-- Кликер -->
             <div class="tab-content" id="clicker">
-                <div class="card">
-                    <h2 class="card-title">Генератор ресурсов</h2>
-                    <p>Тап по ядру для генерации моркови</p>
-                    
-                    <div class="clicker-area">
-                        <button class="carrot-btn" id="clickerCarrot">🥕</button>
-                        <p>Выход: <span id="perClick">1</span> 🥕 за активацию</p>
-                    </div>
-                </div>
+                <!-- Контент кликера -->
             </div>
 
-            <!-- Остальные вкладки... -->
+            <div class="tab-content" id="watering">
+                <!-- Контент поливалки -->
+            </div>
+
+            <div class="tab-content" id="monkey">
+                <!-- Контент обезьянки -->
+            </div>
+
+            <div class="tab-content" id="shooter">
+                <!-- Контент шутера -->
+            </div>
+
+            <div class="tab-content" id="builder">
+                <!-- Контент сборки -->
+            </div>
+
+            <div class="tab-content" id="upgrades">
+                <!-- Контент улучшений -->
+            </div>
+
+            <div class="tab-content" id="shop">
+                <!-- Контент магазина -->
+            </div>
+
+            <div class="tab-content" id="settings">
+                <!-- Контент настроек -->
+            </div>
         </div>
 
         <!-- Правая панель навигации -->
-        <nav class="side-nav">
-            <div class="nav-item active" data-tab="main">🏠</div>
-            <div class="nav-item" data-tab="farm">🌱</div>
-            <div class="nav-item" data-tab="clicker">🥕</div>
-            <div class="nav-item" data-tab="watering">💧</div>
-            <div class="nav-item" data-tab="monkey">🐵</div>
-            <div class="nav-item" data-tab="upgrades">⚡</div>
-            <div class="nav-item" data-tab="shop">🛒</div>
-            <div class="nav-item" data-tab="settings">⚙️</div>
+        <nav class="side-nav cosmic-nav">
+            <div class="nav-item active" data-tab="main">
+                <div class="nav-icon">🚀</div>
+                <div class="nav-label">Главная</div>
+            </div>
+            <div class="nav-item" data-tab="farm">
+                <div class="nav-icon">🌱</div>
+                <div class="nav-label">Ферма</div>
+            </div>
+            <div class="nav-item" data-tab="clicker">
+                <div class="nav-icon">🥕</div>
+                <div class="nav-label">Кликер</div>
+            </div>
+            <div class="nav-item" data-tab="watering">
+                <div class="nav-icon">💧</div>
+                <div class="nav-label">Полив</div>
+            </div>
+            <div class="nav-item" data-tab="monkey">
+                <div class="nav-icon">🐵</div>
+                <div class="nav-label">Обезьянка</div>
+            </div>
+            <div class="nav-item" data-tab="shooter">
+                <div class="nav-icon">🎯</div>
+                <div class="nav-label">Шутер</div>
+            </div>
+            <div class="nav-item" data-tab="builder">
+                <div class="nav-icon">🔧</div>
+                <div class="nav-label">Сборка</div>
+            </div>
+            <div class="nav-item" data-tab="upgrades">
+                <div class="nav-icon">⚡</div>
+                <div class="nav-label">Улучшения</div>
+            </div>
+            <div class="nav-item" data-tab="shop">
+                <div class="nav-icon">🛒</div>
+                <div class="nav-label">Магазин</div>
+            </div>
+            <div class="nav-item" data-tab="settings">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">Настройки</div>
+            </div>
         </nav>
     </div>
 
-    <script>
-        // Базовая инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация Telegram Web App
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.ready();
-                Telegram.WebApp.expand();
-            }
+    <!-- Модальные окна -->
+    <div class="modal" id="caseModal">
+        <div class="modal-content cosmic-modal">
+            <h3>Космический кейс</h3>
+            <div class="case-reward" id="caseReward"></div>
+            <button class="btn btn-primary" id="closeCase">Закрыть</button>
+        </div>
+    </div>
 
-            // Инициализация навигации
-            const navItems = document.querySelectorAll('.nav-item');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Обновляем активную навигацию
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Показываем активную вкладку
-                    tabContents.forEach(tab => tab.classList.remove('active'));
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-
-            // Инициализация фермы
-            initFarm();
-            
-            // Инициализация кликера
-            initClicker();
-            
-            // Инициализация кнопок
-            initButtons();
-        });
-
-        // Инициализация фермы
-        function initFarm() {
-            const farmGrid = document.getElementById('farmGrid');
-            const plots = 6;
-            
-            for (let i = 0; i < plots; i++) {
-                const plot = document.createElement('div');
-                plot.className = 'plot';
-                plot.innerHTML = '🥕';
-                plot.addEventListener('click', function() {
-                    if (this.classList.contains('ready')) {
-                        // Сбор урожая
-                        harvestCarrot(this);
-                    } else {
-                        // Посадка
-                        plantCarrot(this);
-                    }
-                });
-                farmGrid.appendChild(plot);
-            }
-            
-            document.getElementById('plantAllBtn').addEventListener('click', function() {
-                document.querySelectorAll('.plot:not(.ready)').forEach(plot => {
-                    plantCarrot(plot);
-                });
-            });
-        }
-
-        function plantCarrot(plot) {
-            plot.classList.add('ready');
-            plot.innerHTML = '⏳';
-            
-            setTimeout(() => {
-                plot.innerHTML = '🥕';
-            }, 3000);
-        }
-
-        function harvestCarrot(plot) {
-            plot.classList.remove('ready');
-            plot.innerHTML = '🥕';
-            
-            // Добавляем морковки
-            const carrotsElement = document.getElementById('carrots');
-            let carrots = parseInt(carrotsElement.textContent);
-            carrots += 5;
-            carrotsElement.textContent = carrots;
-        }
-
-        // Инициализация кликера
-        function initClicker() {
-            const carrot = document.getElementById('clickerCarrot');
-            const carrotsElement = document.getElementById('carrots');
-            const perClickElement = document.getElementById('perClick');
-            
-            carrot.addEventListener('click', function() {
-                let carrots = parseInt(carrotsElement.textContent);
-                let perClick = parseInt(perClickElement.textContent);
-                
-                carrots += perClick;
-                carrotsElement.textContent = carrots;
-                
-                // Анимация клика
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 100);
-            });
-        }
-
-        // Инициализация кнопок
-        function initButtons() {
-            document.getElementById('quickHarvest').addEventListener('click', function() {
-                document.querySelectorAll('.plot.ready').forEach(plot => {
-                    harvestCarrot(plot);
-                });
-            });
-            
-            document.getElementById('connectBot').addEventListener('click', function() {
-                alert('Функция подключения к боту в разработке');
-            });
-        }
-    </script>
+    <script src="js/utils.js"></script>
+    <script src="js/parallax.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/minigames/clicker.js"></script>
+    <script src="js/minigames/farm.js"></script>
+    <script src="js/minigames/watering.js"></script>
+    <script src="js/minigames/monkey.js"></script>
+    <script src="js/minigames/shooter.js"></script>
+    <script src="js/minigames/builder.js"></script>
+    <script src="js/modules/upgrades.js"></script>
+    <script src="js/modules/shop.js"></script>
+    <script src="js/modules/settings.js"></script>
 </body>
 </html>
