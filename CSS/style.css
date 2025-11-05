@@ -12,6 +12,92 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Анимации для игр */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(300px);
+    }
+}
+
+/* Стили для элементов игр */
+.watering-can {
+    position: absolute;
+    width: 50px;
+    height: 70px;
+    background: #2196f3;
+    border-radius: 5px 5px 20px 20px;
+    cursor: pointer;
+    z-index: 10;
+    transition: left 0.1s;
+}
+
+.water-drop {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #2196f3;
+    border-radius: 50%;
+    z-index: 5;
+    animation: fall 1s linear;
+}
+
+.monkey {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+}
+
+.click-info {
+    position: absolute;
+    color: #ffa726;
+    font-weight: bold;
+    font-size: 18px;
+    pointer-events: none;
+    animation: floatUp 1s forwards;
+    z-index: 100;
+}
+
+/* Адаптивность для игровых областей */
+@media (max-width: 768px) {
+    .game-area {
+        height: 250px;
+    }
+    
+    .watering-can {
+        width: 40px;
+        height: 60px;
+    }
+    
+    .water-drop {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .monkey {
+        width: 50px;
+        height: 50px;
+        font-size: 35px;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
