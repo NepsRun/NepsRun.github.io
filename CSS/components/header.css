@@ -1,0 +1,57 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.user-level {
+    font-weight: 600;
+}
+
+.stats {
+    display: flex;
+    gap: 12px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.stat.currency {
+    color: #ffa726;
+}
+
+.stat.neptunium {
+    color: #29b6f6;
+}
+
+.stat-icon {
+    font-size: 18px;
+}

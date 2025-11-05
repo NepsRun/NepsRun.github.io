@@ -1,0 +1,71 @@
+@import 'common.css';
+@import 'components/header.css';
+@import 'components/navigation.css';
+@import 'components/clicker.css';
+@import 'components/farm.css';
+@import 'components/watering.css';
+@import 'components/monkey.css';
+@import 'components/upgrades.css';
+@import 'components/shop.css';
+@import 'components/settings.css';
+
+/* Скрытие вкладок по умолчанию */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Быстрая статистика */
+.quick-stats {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.quick-stat {
+    background: var(--bg-card);
+    padding: 12px;
+    border-radius: var(--border-radius);
+    flex: 1;
+    text-align: center;
+}
+
+/* Информация о кейсе */
+.case-info {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* Секции настроек */
+.settings-section {
+    margin-bottom: 24px;
+}
+
+.settings-section h3 {
+    margin-bottom: 12px;
+    color: var(--accent-primary);
+}
+
+/* Контактные ссылки */
+.contact-link {
+    display: block;
+    color: var(--accent-secondary);
+    text-decoration: none;
+    padding: 8px 0;
+    transition: var(--transition);
+}
+
+.contact-link:hover {
+    color: var(--accent-primary);
+}

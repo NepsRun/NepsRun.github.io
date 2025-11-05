@@ -1,0 +1,49 @@
+/* Правая панель навигации */
+.side-nav {
+    width: 80px;
+    background: var(--bg-secondary);
+    border-left: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+}
+
+.nav-item {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 24px;
+    position: relative;
+}
+
+.nav-item.active {
+    background: var(--accent-primary);
+}
+
+.nav-item:hover:not(.active) {
+    background: #333;
+}
+
+.nav-label {
+    position: absolute;
+    left: -120px;
+    background: #333;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.nav-item:hover .nav-label {
+    opacity: 1;
+}
